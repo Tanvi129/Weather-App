@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_weather_app/screens/connection_error_page.dart';
 import 'package:my_weather_app/screens/home_page.dart';
+import 'package:my_weather_app/screens/result_page.dart';
 
 import 'bloc/internet_cubit.dart';
 
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => const HomePage(),
           '/connectionError' : (context) => const ConnectionErrorPage(),
           "/home" : (context) => const HomePage(),
+          "/weatherDisplay": (context) => const ResultPage(),
         },
       ),
     );

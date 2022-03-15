@@ -17,8 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int count = 0;
-
   @override
   void initState() {
     // TODO: implement initState
@@ -30,7 +28,6 @@ class _HomePageState extends State<HomePage> {
     // print(weatherCity.city);
   }
 
-  
   //final weatherCity =  weather.getdata();
 
   @override
@@ -42,6 +39,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    final myController = TextEditingController();
+    String? city;
     return Scaffold(
         appBar: AppBar(
           title: const Text("Home Page"),
@@ -49,91 +49,63 @@ class _HomePageState extends State<HomePage> {
         body: SafeArea(
           child: BlocBuilder<InternetCubit, InternetState>(
             builder: (context, state) {
-              WeatherApi weather = WeatherApi(location: "Mumbai");
-              if(state is InternetDisconnected){
-               return const ConnectionErrorPage();
+              if (state is InternetDisconnected) {
+                return const ConnectionErrorPage();
               }
-              return Column(
-                
-                children: <Widget>[
-                  FutureBuilder(
-                      future: weather.getdata(),
-                      builder: ((context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.none) {
-                          return const AlertDialog(
-                            title: Text("Failed to load Data"),
-                          );
-                        }
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          // If we got an error
-                          if (snapshot.hasError) {
-                            return Center(
-                              child: Text(
-                                '${snapshot.error} occured',
-                                style: const TextStyle(fontSize: 18),
-                              ),
-                            );
 
-                            // if we got our data
-                          } else if (snapshot.hasData) {
-                            // Extracting data from snapshot object
-                            final Weather weatherData =
-                                snapshot.data as Weather;
-                            return Center(
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    '${weatherData.city}',
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    '${weatherData.temp_min}',
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    '${weatherData.temp_max}',
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    '${weatherData.humidity}',
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    '${weatherData.pressure}',
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                ],
+              return Container(
+                padding: EdgeInsets.all(24),
+                alignment: Alignment.center,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Enter the City Name:",
+                          style: TextStyle(
+                            fontSize: 24,
+                          )),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              
+                              validator: (String? value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please Enter a City Name";
+                                }
+                                return null;
+                              },
+                              controller: myController,
+                            ),
+                            const SizedBox(
+                              height: 50,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                city=myController.text;
+                                if (_formKey.currentState!.validate()) {
+                                  Navigator.pushNamed(
+                                      context, "/weatherDisplay",
+                                      arguments: city);
+                                }
+                              },
+                              child: const Text(
+                                "Get Weather",
+                                style: TextStyle(fontSize: 16),
                               ),
-                            );
-                          }
-                        }
-                        return const Center(
-                            child: AlertDialog(
-                          title: Text("Failed to load Data"),
-                        ));
-                      }))
-                ],
+                              style: ButtonStyle(
+                                  fixedSize: MaterialStateProperty.all<Size>(
+                                      const Size(150, 50)),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                  ))),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ]),
               );
             },
           ),
