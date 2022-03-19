@@ -40,10 +40,13 @@ class ResultPage extends StatelessWidget {
                         // If we got an error
                         if (snapshot.hasError) {
                           return Center(
-                            child: Text(
-                              '${snapshot.error} occured',
-                              style: const TextStyle(fontSize: 18),
-                            ),
+                            child: AlertDialog(
+                              title: Text('${snapshot.error}'),
+                            )
+                            //  Text(
+                            //   '${snapshot.error} occured',
+                            //   style: const TextStyle(fontSize: 18),
+                            // ),
                           );
                 
                           // if we got our data
@@ -76,12 +79,12 @@ class ResultPage extends StatelessWidget {
                                       ),
                                      
                                      
-                                      WeatherItem(title: "Minimum Temperature : ",weatherParam: weatherData.temp_min),                            
+                                      WeatherItem(title: "Minimum Temperature : ",weatherParam: weatherData.temp_min, symbol: "C",),                            
                                       const SizedBox(
                                         height: 10,
                                       ),
                                      
-                                      WeatherItem(title: "Maximum Temperature : ",weatherParam: weatherData.temp_max),
+                                      WeatherItem(title: "Maximum Temperature : ",weatherParam: weatherData.temp_max, symbol: "C",),
                                       const SizedBox(
                                         height: 10,
                                       ),
@@ -107,7 +110,9 @@ class ResultPage extends StatelessWidget {
                       }
                       return const Center(
                           child: AlertDialog(
-                        title: Text("Failed to load Data"),
+                            alignment: Alignment.center,
+                        title: Text("Failed to load Data",
+                        textAlign: TextAlign.center,),
                       ));
                     }))
               ],
